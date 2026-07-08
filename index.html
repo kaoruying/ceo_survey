@@ -159,7 +159,7 @@
       background-size: 6px 6px, 6px 6px;
       background-repeat: no-repeat;
     }
-    input:disabled {
+    input:disabled, select:disabled {
       background: #F4F7FA;
       color: #8A9AAF;
       cursor: not-allowed;
@@ -507,13 +507,14 @@
         </select>
       </div>
       <div class="field">
-        <label id="lookup-title" for="officeLookup">再選擇或輸入通訊處名稱 <span>＊</span></label>
+        <label id="lookup-title" for="officeLookup">再選擇通訊處名稱 <span>＊</span></label>
         <div class="query-grid">
-          <input id="officeLookup" list="officeList" autocomplete="off" placeholder="請先選擇所屬地區" disabled />
+          <select id="officeLookup" disabled>
+            <option value="">請先選擇所屬地區</option>
+          </select>
           <button id="lookupBtn" type="button">查詢報名資料</button>
         </div>
-        <datalist id="officeList"></datalist>
-        <div class="hint">選擇地區後，通訊處清單會自動篩選；若查不到資料，請確認名稱是否輸入完整。</div>
+        <div class="hint">選擇地區後，通訊處清單會自動篩選，可直接用手機下拉選取。</div>
         <div id="lookupMessage" class="lookup-message"></div>
         <div id="candidateList" class="candidate-list"></div>
       </div>
@@ -658,7 +659,7 @@
 
     const regionLookup = document.getElementById("regionLookup");
     const officeLookup = document.getElementById("officeLookup");
-    const officeList = document.getElementById("officeList");
+    const officeList = officeLookup;
     const lookupBtn = document.getElementById("lookupBtn");
     const lookupMessage = document.getElementById("lookupMessage");
     const candidateList = document.getElementById("candidateList");
@@ -736,15 +737,22 @@
 
     function populateOfficeList(region = "") {
       officeList.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = region ? "請選擇通訊處名稱" : "請先選擇所屬地區";
+      officeList.appendChild(placeholder);
+
+      if (!region) return;
+
       const frag = document.createDocumentFragment();
       REGISTRATIONS
-        .filter(item => !region || item.region === region)
+        .filter(item => item.region === region)
         .slice()
         .sort((a,b) => a.office.localeCompare(b.office, "zh-Hant"))
         .forEach(item => {
           const opt = document.createElement("option");
           opt.value = item.office;
-          opt.label = `${item.office}｜${item.name}`;
+          opt.textContent = `${item.office}｜${item.name}`;
           frag.appendChild(opt);
         });
       officeList.appendChild(frag);
@@ -846,7 +854,7 @@
         return;
       }
       if (!officeLookup.value.trim()) {
-        setMessage("請再選擇或輸入通訊處名稱。", "warn");
+        setMessage("請再選擇通訊處名稱。", "warn");
         return;
       }
       if (records.length === 0) {
@@ -873,19 +881,15 @@
     }
 
     regionLookup.addEventListener("change", () => {
-      officeLookup.value = "";
       officeLookup.disabled = !regionLookup.value;
-      officeLookup.placeholder = regionLookup.value ? "例：請選擇或輸入通訊處名稱" : "請先選擇所屬地區";
       populateOfficeList(regionLookup.value);
+      officeLookup.value = "";
       resetLookupView();
     });
 
     lookupBtn.addEventListener("click", handleLookup);
-    officeLookup.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        handleLookup();
-      }
+    officeLookup.addEventListener("change", () => {
+      resetLookupView();
     });
 
     form.addEventListener("submit", async event => {
