@@ -478,6 +478,52 @@
         min-height: 150px;
       }
     }
+
+    .lookup-actions {
+      margin-top: 4px;
+      justify-content: flex-start;
+    }
+
+    .lookup-actions button {
+      min-width: 180px;
+    }
+
+    @media (max-width: 640px) {
+      .lookup-actions button {
+        width: 100%;
+      }
+    }
+
+  
+    /* 手機精簡版 */
+    .hero { padding: 20px 24px; margin-bottom: 14px; }
+    .hero .eyebrow { margin-bottom: 6px; font-size: 12px; }
+    .hero h1 { font-size: clamp(24px, 5vw, 34px); line-height: 1.2; }
+    .hero p { margin-top: 8px; font-size: 14px; line-height: 1.55; }
+    .query-card { padding: 22px; }
+    .query-card .field + .field { margin-top: 16px; }
+    .lookup-actions { margin-top: 18px; }
+    .lookup-actions button { width: 100%; }
+    .query-card .hint { display: none; }
+    .form-head p, #sessionInfoSection .form-head p { display: none; }
+    .form-head { margin-bottom: 14px; }
+    .form-head h2 { font-size: 24px; }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 18px, 1080px); padding-top: 12px; }
+      .topbar { margin-bottom: 10px; }
+      .hero { padding: 18px 18px; border-radius: 18px; }
+      .hero::before, .hero::after { display: none; }
+      .hero h1 { font-size: 25px; }
+      .hero p { font-size: 13px; line-height: 1.5; }
+      .query-card, .result-card, .form-card { padding: 18px; border-radius: 18px; margin-top: 12px; }
+      input, select, textarea { font-size: 16px; border-radius: 14px; padding: 14px; }
+      .field label { font-size: 16px; }
+      .success-title { font-size: 25px; }
+      .success-sub { font-size: 15px; }
+      .form-head h2 { font-size: 22px; }
+      textarea { min-height: 130px; }
+    }
+
   </style>
 </head>
 <body>
@@ -493,90 +539,82 @@
 
     <section class="hero">
       <div class="hero-content">
-        <div class="eyebrow">Registration confirmed</div>
-        <h1>選擇地區與通訊處<br />查看您的報名場次</h1>
-        <p>系統將依報名資料顯示「報名成功」訊息、場次時間地點、講者背景與講題大綱；請閱讀後，完成下方兩題課前期待與QA提問。</p>
+        <div class="eyebrow">K PLUS CEO講堂</div>
+        <h1>課前問卷</h1>
+        <p>請選擇所屬地區及您的通訊處｜處經理姓名。</p>
       </div>
     </section>
 
     <section class="query-card" aria-labelledby="lookup-title">
       <div class="field region-field">
-        <label for="regionLookup">請先選擇所屬地區 <span>＊</span></label>
+        <label for="regionLookup">所屬地區 <span>＊</span></label>
         <select id="regionLookup" required>
           <option value="">請選擇地區</option>
         </select>
       </div>
+
       <div class="field">
-        <label id="lookup-title" for="officeLookup">再選擇通訊處名稱 <span>＊</span></label>
-        <div class="query-grid">
-          <select id="officeLookup" disabled>
-            <option value="">請先選擇所屬地區</option>
-          </select>
-          <button id="lookupBtn" type="button">查詢報名資料</button>
-        </div>
-        <div class="hint">選擇地區後，通訊處清單會自動篩選，可直接用手機下拉選取。</div>
-        <div id="lookupMessage" class="lookup-message"></div>
-        <div id="candidateList" class="candidate-list"></div>
+        <label id="lookup-title" for="personLookup">通訊處｜處經理姓名 <span>＊</span></label>
+        <select id="personLookup" disabled>
+          <option value="">請先選擇所屬地區</option>
+        </select>
       </div>
+
+      <div class="actions lookup-actions">
+        <button id="lookupBtn" type="button">開始填寫問卷</button>
+      </div>
+
+      <div id="lookupMessage" class="lookup-message"></div>
     </section>
 
     <section id="resultCard" class="result-card hidden" aria-live="polite">
       <div class="success-head">
         <div>
           <h2 id="successTitle" class="success-title">恭喜您報名成功！</h2>
-          <p id="successSub" class="success-sub">以下為您報名成功的場次資訊。</p>
+          <p id="successSub" class="success-sub">以下為您報名成功的場次。</p>
         </div>
         <div class="check">✓</div>
       </div>
-
-      <div class="profile">
-        <div class="profile-item">
-          <div class="profile-label">通訊處</div>
-          <div id="profileOffice" class="profile-value">—</div>
-        </div>
-        <div class="profile-item">
-          <div class="profile-label">處經理</div>
-          <div id="profileName" class="profile-value">—</div>
-        </div>
-        <div class="profile-item">
-          <div class="profile-label">所屬地區</div>
-          <div id="profileRegion" class="profile-value">—</div>
-        </div>
-      </div>
-
-      <div id="sessionGrid" class="session-grid"></div>
     </section>
 
     <section id="surveySection" class="form-card hidden" aria-labelledby="form-title">
       <div class="form-head">
         <div>
           <h2 id="form-title">課前期待與QA提問</h2>
-          <p>以下內容將提供講者課前參考，協助課程更貼近處經理實務需求。</p>
+          
         </div>
       </div>
 
       <form id="surveyForm">
         <div class="fields">
-          <div id="selectedProfile" class="read-only-line">請先查詢通訊處。</div>
-
           <div class="field">
             <label for="expectation">對於八月份課程的期待 <span>＊</span></label>
             <textarea id="expectation" name="expectation" required placeholder="請寫下您對八月份課程的期待。"></textarea>
-            <div class="hint">請依您的實際期待填寫，內容將提供講者課前參考。</div>
+            
           </div>
 
           <div class="field">
             <label for="qaQuestion">想要問講者的問題 <span>＊</span></label>
-            <textarea id="qaQuestion" name="qaQuestion" required placeholder="請寫下您想要問8月份講者的問題。"></textarea>
-            <div class="hint">問題可結合通訊處經營、團隊管理或個人領導情境。</div>
+            <textarea id="qaQuestion" name="qaQuestion" required placeholder="請寫下您想要問講者的問題。"></textarea>
+            
           </div>
         </div>
 
         <div class="actions">
           <button id="submitBtn" type="submit">送出問卷</button>
-          <div id="status" class="status" role="status" aria-live="polite">送出後將顯示完成訊息。</div>
+          <div id="status" class="status" role="status" aria-live="polite"></div>
         </div>
       </form>
+    </section>
+
+    <section id="sessionInfoSection" class="form-card hidden" aria-labelledby="session-info-title">
+      <div class="form-head">
+        <div>
+          <h2 id="session-info-title">場次講師與講題資訊</h2>
+          
+        </div>
+      </div>
+      <div id="sessionGrid" class="session-grid"></div>
     </section>
 
     <div class="footer">凱基人壽 × 商周CEO學院｜K PLUS CEO講堂</div>
@@ -587,7 +625,7 @@
     // 請將 Apps Script 部署後取得的「網頁應用程式網址」貼在下方雙引號內。
     const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbylFCJrno4HQ7slBF9oV_I_gw4OpH2InkVjDyz60kISlyjkC3AmaS-3UgNBvMS91p3T/exec";
 
-    const REGISTRATIONS = [{"office":"富山","name":"詹禕齡","region":"中嘉","response":"其他需求","note":"8/11無法參加，參加11/11","sessions":["2026-11-11"]},{"office":"三多","name":"蕭慧君","region":"高屏","response":"其他需求","note":"高屏的第一堂課在中山後EMBA上過。請問希望調整到8/5台北場的邱光隆 逆境領導力。第二堂維持在高雄。謝謝🙏","sessions":["2026-08-05","2026-11-11"]},{"office":"尚誠","name":"張濬翔","region":"高屏","response":"其他需求","note":"我想申請參加8月5號下午台北場的活動以及11月11號下午高雄場的活動，不曉得是否可行感謝","sessions":["2026-08-05","2026-11-11"]},{"office":"奕震","name":"步光中","region":"中嘉","response":"其他需求","note":"8/11已有行程安排，可否改上8/05的課程","sessions":["2026-08-05","2026-11-11"]},{"office":"菁業","name":"陳菁亮","region":"中嘉","response":"其他需求","note":"8/11有行程，是否可以改8/5","sessions":["2026-08-05","2026-11-11"]},{"office":"ㄧ心","name":"劉春生","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"七賢","name":"魏麗娟","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"力慶","name":"成一道","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"至慶","name":"簡至妙","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"宏慶","name":"陳澤坤","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"佳慶","name":"王美玲","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金達","name":"洪淑娟","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"信誠","name":"汪東森","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"冠慶","name":"劉孟霞","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"韋誠","name":"沈鳳英","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"泰誠","name":"林美足","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"高雄直轄一","name":"賴汕榕","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"國慶","name":"葉柏汝","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"崇慶","name":"蔡耀焜","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"彩榮","name":"梁麗琴","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"順誠","name":"張婄吟","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"睿誠","name":"李碧珠","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"德山","name":"黃榮德","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"慶亞","name":"林亞麗","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"樂誠","name":"林亭瑤","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"今誠","name":"王織錦","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"立捷","name":"蘇雅俐","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"松慶","name":"廖樹松","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金冠","name":"傅浚展","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金美","name":"樊光美","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金豪","name":"吳麗芳","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"冠英","name":"林美吟","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"南英","name":"曾美絹","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"菁英","name":"張雅菁","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"上慶","name":"邱慧娟","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"太陽","name":"吳志松","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"日兆","name":"蔡兆梅","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"禾順","name":"陳尹婷","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"明冠","name":"陳虹妙","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"凱旋","name":"王萬枝","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"棠山","name":"王永棠","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"詠續","name":"羅安生","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"雲林直轄","name":"趙國華","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"嘉義","name":"陳俊吉","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"嘉誠","name":"鍾金燕","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"嘉銓","name":"楊嘉麗","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"福鵬直轄","name":"黃傑揚","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"駿山","name":"李郁馨","region":"北二","response":"其他需求","note":"8/5不克出席，11/10出席，謝謝","sessions":["2026-11-10"]},{"office":"越鋒","name":"林采娥","region":"北一","response":"其他需求","note":"第一堂因出國無法出席，只能參與第二堂課程","sessions":["2026-11-10"]},{"office":"上千","name":"張瀞心","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"北大","name":"彭美玲","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"亞威","name":"周淑娥","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昊浱","name":"鄭家和","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昌羿","name":"廖怡茹","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"金峰","name":"呂秋蓉","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"虹燁","name":"許雅虹","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"瑞至","name":"黃欣至","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"瑞峰","name":"蕭莉婷","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"瑞興","name":"莊永興","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"躍昇","name":"許又臻","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"玉山","name":"楊玲芳","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"众山","name":"呂敏淑","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"宏瑞","name":"梁建芳","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昊陽","name":"林浩筠","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昕立","name":"辜千蓉","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"東山","name":"曾孝媛","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"凌山","name":"蔡明恭","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"展毓","name":"嚴毓棟","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"崧峰","name":"張啓峯","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"敦煌","name":"康明正","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"華山","name":"曾素琴","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"誠山","name":"簡聰穎","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"慶昇","name":"林書嬿","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"臻觀","name":"詹秀媚","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"駿廷","name":"程廷鈞","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"駿鋮","name":"林宥成","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"鴻山","name":"許美鴻","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"大衛","name":"翁文昌","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"北一直轄一","name":"趙永坦","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"民生","name":"詹美惠","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"汎德","name":"謝志湖","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"宏運","name":"郭家卉","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"奇異","name":"林俊宜","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昇晴","name":"沈慕晴","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昊昱","name":"林靜香","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"金彥","name":"鄧睿宸","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"非凡","name":"曾淑珍","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"俞傑","name":"王語蓁","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昭才","name":"張悦平","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"泉泰","name":"潘則芳","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"恩典","name":"林麗華","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"創建","name":"譚淑鋆","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"毅品","name":"張雅如","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"應許","name":"徐苓芸","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"鴻海","name":"林錦鴻","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"躍勇","name":"陳勇伯","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"金昱","name":"孫元慶","region":"北一","response":"不克出席","note":"","sessions":[]}];
+    const REGISTRATIONS = [{"office":"富山","name":"詹禕齡","region":"中嘉","response":"其他需求","note":"8/11無法參加，參加11/11","sessions":["2026-11-11"]},{"office":"三多","name":"蕭慧君","region":"高屏","response":"其他需求","note":"高屏的第一堂課在中山後EMBA上過。請問希望調整到8/5台北場的邱光隆 逆境領導力。第二堂維持在高雄。謝謝🙏","sessions":["2026-08-05","2026-11-11"]},{"office":"尚誠","name":"張濬翔","region":"高屏","response":"其他需求","note":"我想申請參加8月5號下午台北場的活動以及11月11號下午高雄場的活動，不曉得是否可行感謝","sessions":["2026-08-05","2026-11-11"]},{"office":"奕震","name":"步光中","region":"中嘉","response":"其他需求","note":"8/11已有行程安排，可否改上8/05的課程","sessions":["2026-08-05","2026-11-11"]},{"office":"菁業","name":"陳菁亮","region":"中嘉","response":"其他需求","note":"8/11有行程，是否可以改8/5","sessions":["2026-08-05","2026-11-11"]},{"office":"一心","name":"劉春生","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"七賢","name":"魏麗娟","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"力慶","name":"成一道","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"至慶","name":"簡至妙","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"宏慶","name":"陳澤坤","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"佳慶","name":"王美玲","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金達","name":"洪淑娟","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"信誠","name":"汪東森","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"冠慶","name":"劉孟霞","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"韋誠","name":"沈鳳英","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"泰誠","name":"林美足","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"高雄直轄一","name":"賴汕榕","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"國慶","name":"葉柏汝","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"崇慶","name":"蔡耀焜","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"彩榮","name":"梁麗琴","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"順誠","name":"張婄吟","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"睿誠","name":"李碧珠","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"德山","name":"黃榮德","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"慶亞","name":"林亞麗","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"樂誠","name":"林亭瑤","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"今誠","name":"王織錦","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"立捷","name":"蘇雅俐","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"松慶","name":"廖樹松","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金冠","name":"傅浚展","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金美","name":"樊光美","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"金豪","name":"吳麗芳","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"冠英","name":"林美吟","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"南英","name":"曾美絹","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"菁英","name":"張雅菁","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"上慶","name":"邱慧娟","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"太陽","name":"吳志松","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"日兆","name":"蔡兆梅","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"禾順","name":"陳尹婷","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"明冠","name":"陳虹妙","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"凱旋","name":"王萬枝","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"棠山","name":"王永棠","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"詠續","name":"羅安生","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"雲林直轄","name":"趙國華","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"嘉義","name":"陳俊吉","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"嘉誠","name":"鍾金燕","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"嘉銓","name":"楊嘉麗","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"福鵬直轄","name":"黃傑揚","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"駿山","name":"李郁馨","region":"北二","response":"其他需求","note":"8/5不克出席，11/10出席，謝謝","sessions":["2026-11-10"]},{"office":"越鋒","name":"林采娥","region":"北一","response":"其他需求","note":"第一堂因出國無法出席，只能參與第二堂課程","sessions":["2026-11-10"]},{"office":"上千","name":"張瀞心","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"北大","name":"彭美玲","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"亞威","name":"周淑娥","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昊浱","name":"鄭家和","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昌羿","name":"廖怡茹","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"金峰","name":"呂秋蓉","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"虹燁","name":"許雅虹","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"瑞至","name":"黃欣至","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"瑞峰","name":"蕭莉婷","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"瑞興","name":"莊永興","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"躍昇","name":"許又臻","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"玉山","name":"楊玲芳","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"众山","name":"呂敏淑","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"宏觀","name":"梁建芳","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昊陽","name":"林浩筠","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昕立","name":"辜千蓉","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"東山","name":"曾孝媛","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"凌山","name":"蔡明恭","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"展毓","name":"嚴毓棟","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"崧峰","name":"張啓峯","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"敦煌","name":"康明正","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"華山","name":"曾素琴","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"誠山","name":"簡聰穎","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"慶昇","name":"林書嬿","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"臻觀","name":"詹秀媚","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"駿廷","name":"程廷鈞","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"駿鋮","name":"林宥成","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"鴻山","name":"許美鴻","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"大衛","name":"翁文昌","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"北一直轄一","name":"趙永坦","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"民生","name":"詹美惠","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"汎德","name":"謝志湖","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"宏運","name":"郭家卉","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"奇異","name":"林俊宜","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昇晴","name":"沈慕晴","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昊昱","name":"林靜香","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"金彥","name":"鄧睿宸","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"非凡","name":"曾淑珍","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"俞傑","name":"王語蓁","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"昭才","name":"張悦平","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"泉泰","name":"潘則芳","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"恩典","name":"林麗華","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"創建","name":"譚淑鋆","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"毅品","name":"張雅如","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"應許","name":"徐苓芸","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"鴻海","name":"林錦鴻","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"躍勇","name":"陳勇伯","region":"北一","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"金昱","name":"孫元慶","region":"北一","response":"不克出席","note":"","sessions":[]},{"office":"樺慶","name":"蔡福文","region":"台南","response":"不克出席","note":"不克出席","sessions":[]},{"office":"金典","name":"陳聰銘","region":"北一","response":"不克出席","note":"不克出席","sessions":[]},{"office":"金躍","name":"胡躍瀧","region":"桃竹","response":"不克出席","note":"不克出席","sessions":[]},{"office":"豐格","name":"熊秀美","region":"北一","response":"以上日期確定出席","note":"以上日期確定出席","sessions":["2026-08-05","2026-11-10"]},{"office":"威力","name":"李育倫","region":"北二","response":"不克出席","note":"","sessions":[]},{"office":"台南","name":"張正道","region":"高屏","response":"不克出席","note":"","sessions":[]},{"office":"忠信","name":"何振誠","region":"北二","response":"不克出席","note":"","sessions":[]},{"office":"皇城","name":"孫國城","region":"桃竹","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"威任","name":"陳威任","region":"中嘉","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-08-11","2026-11-11"]},{"office":"雙贏","name":"許凱婷","region":"北二","response":"以上日期確定出席","note":"","sessions":["2026-08-05","2026-11-10"]},{"office":"仁愛","name":"姚承捷","region":"北二","response":"不克出席","note":"","sessions":[]},{"office":"大昇","name":"韓昇衛","region":"桃竹","response":"不克出席","note":"","sessions":[]},{"office":"巨朋","name":"葉雲清","region":"桃竹","response":"不克出席","note":"","sessions":[]},{"office":"群富","name":"劉彥宏","region":"中嘉","response":"不克出席","note":"","sessions":[]},{"office":"立富","name":"謝明宗","region":"台南","response":"不克出席","note":"","sessions":[]},{"office":"廣慶","name":"林清香","region":"台南","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"灞霖","name":"吳俊毅","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"翔大","name":"朱素絹","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]},{"office":"高宏","name":"朱俊聰","region":"高屏","response":"以上日期確定出席","note":"","sessions":["2026-08-11","2026-11-11"]}];
 
     const SESSION_INFO = {
       "2026-08-05": {
@@ -658,20 +696,15 @@
     };
 
     const regionLookup = document.getElementById("regionLookup");
-    const officeLookup = document.getElementById("officeLookup");
-    const officeList = officeLookup;
+    const personLookup = document.getElementById("personLookup");
     const lookupBtn = document.getElementById("lookupBtn");
     const lookupMessage = document.getElementById("lookupMessage");
-    const candidateList = document.getElementById("candidateList");
     const resultCard = document.getElementById("resultCard");
     const surveySection = document.getElementById("surveySection");
+    const sessionInfoSection = document.getElementById("sessionInfoSection");
     const sessionGrid = document.getElementById("sessionGrid");
-    const profileOffice = document.getElementById("profileOffice");
-    const profileName = document.getElementById("profileName");
-    const profileRegion = document.getElementById("profileRegion");
     const successTitle = document.getElementById("successTitle");
     const successSub = document.getElementById("successSub");
-    const selectedProfile = document.getElementById("selectedProfile");
     const form = document.getElementById("surveyForm");
     const statusEl = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
@@ -688,16 +721,6 @@
         .replaceAll("'", "&#039;");
     }
 
-    function normalize(value) {
-      return String(value ?? "")
-        .trim()
-        .replaceAll("ㄧ", "一")
-        .replace(/\s+/g, "")
-        .replace(/通訊處/g, "")
-        .replace(/[，,。．.、\-＿_]/g, "")
-        .toLowerCase();
-    }
-
     function sessionLabel(code) {
       const s = SESSION_INFO[code];
       return s ? `${s.date}｜${s.city}｜${s.speaker}` : code;
@@ -711,7 +734,6 @@
     function clearMessage() {
       lookupMessage.textContent = "";
       lookupMessage.className = "lookup-message";
-      candidateList.innerHTML = "";
     }
 
     function sortRegions(regions) {
@@ -723,96 +745,70 @@
       });
     }
 
+    function setSelectOptions(select, placeholder, values) {
+      select.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = placeholder;
+      select.appendChild(first);
+
+      values.forEach(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    }
+
     function populateRegionList() {
       const regions = sortRegions([...new Set(REGISTRATIONS.map(r => r.region).filter(Boolean))]);
-      const frag = document.createDocumentFragment();
       regions.forEach(region => {
-        const opt = document.createElement("option");
-        opt.value = region;
-        opt.textContent = region;
-        frag.appendChild(opt);
+        const option = document.createElement("option");
+        option.value = region;
+        option.textContent = region;
+        regionLookup.appendChild(option);
       });
-      regionLookup.appendChild(frag);
     }
 
-    function populateOfficeList(region = "") {
-      officeList.innerHTML = "";
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = region ? "請選擇通訊處名稱" : "請先選擇所屬地區";
-      officeList.appendChild(placeholder);
+    function populatePersonList(region = "") {
+      personLookup.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = region ? "請選擇通訊處｜處經理姓名" : "請先選擇所屬地區";
+      personLookup.appendChild(first);
 
-      if (!region) return;
-
-      const frag = document.createDocumentFragment();
-      REGISTRATIONS
+      const records = REGISTRATIONS
         .filter(item => item.region === region)
-        .slice()
-        .sort((a,b) => a.office.localeCompare(b.office, "zh-Hant"))
-        .forEach(item => {
-          const opt = document.createElement("option");
-          opt.value = item.office;
-          opt.textContent = `${item.office}｜${item.name}`;
-          frag.appendChild(opt);
-        });
-      officeList.appendChild(frag);
-    }
+        .sort((a, b) => a.office.localeCompare(b.office, "zh-Hant") || a.name.localeCompare(b.name, "zh-Hant"));
 
-    function findRecords(query) {
-      const selectedRegion = regionLookup.value;
-      const q = normalize(query);
-      if (!selectedRegion || !q) return [];
-      const base = REGISTRATIONS.filter(r => r.region === selectedRegion);
-      let exact = base.filter(r => normalize(r.office) === q);
-      if (exact.length) return exact;
-      if (q.length < 2) return [];
-      return base.filter(r => {
-        const office = normalize(r.office);
-        return office.includes(q) || q.includes(office);
+      records.forEach((record, index) => {
+        const option = document.createElement("option");
+        option.value = `${record.region}|||${record.office}|||${record.name}`;
+        option.textContent = `${record.office}｜${record.name}`;
+        personLookup.appendChild(option);
       });
+      personLookup.disabled = !region;
     }
 
-    function renderCandidates(records) {
-      candidateList.innerHTML = "";
-      if (!records.length) return;
-      setMessage("找到多筆相近通訊處，請選擇正確項目：", "warn");
-      records.slice(0, 12).forEach(r => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "ghost-btn";
-        btn.textContent = `${r.office}｜${r.name}`;
-        btn.addEventListener("click", () => renderRecord(r));
-        candidateList.appendChild(btn);
-      });
+    function findRecord() {
+      if (!personLookup.value) return null;
+      const [region, office, name] = personLookup.value.split("|||");
+      return REGISTRATIONS.find(record =>
+        record.region === region && record.office === office && record.name === name
+      ) || null;
     }
 
-    function renderRecord(record) {
-      selectedRecord = record;
-      clearMessage();
-
-      profileOffice.textContent = record.office || "—";
-      profileName.textContent = record.name || "—";
-      profileRegion.textContent = record.region || "—";
-
+    function renderSessionCards(record) {
       sessionGrid.innerHTML = "";
-
-      if (!record.sessions || record.sessions.length === 0) {
-        successTitle.textContent = "目前資料顯示為不克出席";
-        successSub.textContent = "若您需要異動或補填課前問卷，請洽承辦人員確認。";
-        resultCard.classList.remove("hidden");
-        surveySection.classList.add("hidden");
-        resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
-        return;
-      }
-
-      successTitle.textContent = "恭喜您報名成功！";
-      successSub.textContent = "以下為您報名成功的場次、講者介紹與講題大綱。";
-      selectedProfile.innerHTML = `報名場次：<br>${record.sessions.map(sessionLabel).map(escapeHtml).join("<br>")}`;
 
       record.sessions.forEach(code => {
         const s = SESSION_INFO[code];
         if (!s) return;
-        const outlineHtml = s.outline.map(item => `<li>${escapeHtml(item)}</li>`).join("");
+
+        const outlineHtml = s.outline
+          .map(item => `<li>${escapeHtml(item)}</li>`)
+          .join("");
+
         const card = document.createElement("article");
         card.className = "session-card";
         card.innerHTML = `
@@ -826,7 +822,7 @@
             <div class="info-row"><div class="info-key">日期</div><div class="info-val">${escapeHtml(s.date)}</div></div>
             <div class="info-row"><div class="info-key">時間</div><div class="info-val">${escapeHtml(s.time)}</div></div>
             <div class="info-row"><div class="info-key">地點</div><div class="info-val">${escapeHtml(s.place)}</div></div>
-            <div class="section-title">講者背景</div>
+            <div class="section-title">講師背景</div>
             <p class="intro">${escapeHtml(s.intro)}</p>
             <div class="section-title">講題大綱</div>
             <ul class="outline">${outlineHtml}</ul>
@@ -834,38 +830,56 @@
         `;
         sessionGrid.appendChild(card);
       });
+    }
+
+    function renderRecord(record) {
+      selectedRecord = record;
+      clearMessage();
 
       resultCard.classList.remove("hidden");
+
+      if (!record.sessions || record.sessions.length === 0) {
+        successTitle.textContent = `${record.name} 處經理您好`;
+        successSub.textContent = "目前報名資料顯示為不克出席；如需調整，請洽承辦人員。";
+        surveySection.classList.add("hidden");
+        sessionInfoSection.classList.add("hidden");
+        resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      successTitle.textContent = `歡迎您，${record.name} 處經理！恭喜您報名成功`;
+      successSub.innerHTML = record.sessions
+        .map(code => escapeHtml(sessionLabel(code)))
+        .join("<br>");
+
+      renderSessionCards(record);
+
       surveySection.classList.remove("hidden");
-      statusEl.textContent = "送出後將顯示完成訊息。";
+      sessionInfoSection.classList.remove("hidden");
+      statusEl.textContent = "";
       statusEl.className = "status";
       resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function handleLookup() {
       clearMessage();
-      const records = findRecords(officeLookup.value);
-      resultCard.classList.add("hidden");
-      surveySection.classList.add("hidden");
-      selectedRecord = null;
+      resetLookupView();
 
       if (!regionLookup.value) {
-        setMessage("請先選擇所屬地區。", "warn");
+        setMessage("請先選擇所屬地區。");
         return;
       }
-      if (!officeLookup.value.trim()) {
-        setMessage("請再選擇通訊處名稱。", "warn");
+      if (!personLookup.value) {
+        setMessage("請選擇您的通訊處與處經理姓名。");
         return;
       }
-      if (records.length === 0) {
-        setMessage("此地區查無該通訊處報名資料，請確認地區與通訊處名稱是否正確，或洽承辦人員。", "warn");
+
+      const record = findRecord();
+      if (!record) {
+        setMessage("查無符合的報名資料，請重新選擇或洽承辦人員。");
         return;
       }
-      if (records.length > 1) {
-        renderCandidates(records);
-        return;
-      }
-      renderRecord(records[0]);
+      renderRecord(record);
     }
 
     function setStatus(message, type = "") {
@@ -874,23 +888,26 @@
     }
 
     function resetLookupView() {
-      clearMessage();
       resultCard.classList.add("hidden");
       surveySection.classList.add("hidden");
+      sessionInfoSection.classList.add("hidden");
+      sessionGrid.innerHTML = "";
       selectedRecord = null;
     }
 
     regionLookup.addEventListener("change", () => {
-      officeLookup.disabled = !regionLookup.value;
-      populateOfficeList(regionLookup.value);
-      officeLookup.value = "";
+      populatePersonList(regionLookup.value);
+      personLookup.value = "";
+      clearMessage();
+      resetLookupView();
+    });
+
+    personLookup.addEventListener("change", () => {
+      clearMessage();
       resetLookupView();
     });
 
     lookupBtn.addEventListener("click", handleLookup);
-    officeLookup.addEventListener("change", () => {
-      resetLookupView();
-    });
 
     form.addEventListener("submit", async event => {
       event.preventDefault();
@@ -941,6 +958,7 @@
 
     populateRegionList();
     populateOfficeList();
+    populateNameList();
   </script>
 </body>
 </html>
