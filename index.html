@@ -441,7 +441,7 @@
     const COURSE_INFO = {
       "8/5台北場": {
         aliases: ["8/5台北場", "8/5 台北場", "08/05台北場", "8月5日台北場"],
-        date: "8/5（三）下午 13:30",
+        date: "8/5（三）下午13:30",
         city: "台北場",
         speaker: "邱光隆",
         role: "三商家購（美廉社）董事總經理",
@@ -523,6 +523,9 @@
     const submitStatus = document.getElementById("submitStatus");
 
     let registrations = [];
+    const REGISTRATION_CACHE_KEY = "kplus_ceo_registrations_v2";
+    const REGISTRATION_CACHE_TIME_KEY = "kplus_ceo_registrations_time_v2";
+    const REGISTRATION_CACHE_MS = 30 * 60 * 1000;
     let selectedRecord = null;
 
     function escapeHtml(value) {
@@ -589,16 +592,8 @@
       };
     }
 
-    async function loadRegistrations() {
-      showLookupMessage("正在讀取最新報名名單…", "info");
-      const url = `${SCRIPT_URL}?action=registrations&t=${Date.now()}`;
-      const response = await fetch(url, { method: "GET", cache: "no-store" });
-      if (!response.ok) throw new Error("無法讀取報名名單");
-
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.message || "報名名單載入失敗");
-
-      registrations = (result.registrations || [])
+    function applyRegistrationData(data) {
+      registrations = (data || [])
         .map(normalizeRegistration)
         .filter(record => record.region && record.office && record.name)
         .filter(isEligible);
@@ -613,6 +608,49 @@
         orderedRegions.map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
       regionSelect.disabled = false;
       hideLookupMessage();
+    }
+
+    async function loadRegistrations() {
+      let hasCache = false;
+
+      try {
+        const cachedText = localStorage.getItem(REGISTRATION_CACHE_KEY);
+        const cachedTime = Number(localStorage.getItem(REGISTRATION_CACHE_TIME_KEY) || 0);
+
+        if (cachedText) {
+          const cachedData = JSON.parse(cachedText);
+          if (Array.isArray(cachedData) && cachedData.length > 0) {
+            applyRegistrationData(cachedData);
+            hasCache = true;
+
+            if (Date.now() - cachedTime < REGISTRATION_CACHE_MS) {
+              return;
+            }
+          }
+        }
+      } catch (error) {
+        console.warn("讀取名單快取失敗", error);
+      }
+
+      try {
+        const url = `${SCRIPT_URL}?action=registrations&t=${Date.now()}`;
+        const response = await fetch(url, { method: "GET", cache: "no-store" });
+        if (!response.ok) throw new Error("無法讀取報名名單");
+
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.message || "報名名單載入失敗");
+
+        const latestData = result.registrations || [];
+        applyRegistrationData(latestData);
+
+        localStorage.setItem(REGISTRATION_CACHE_KEY, JSON.stringify(latestData));
+        localStorage.setItem(REGISTRATION_CACHE_TIME_KEY, String(Date.now()));
+      } catch (error) {
+        console.error(error);
+        if (!hasCache) {
+          showLookupMessage("目前無法載入報名名單，請稍後重新整理。", "error");
+        }
+      }
     }
 
     function resetResult() {
