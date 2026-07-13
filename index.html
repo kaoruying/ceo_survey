@@ -589,30 +589,131 @@
       };
     }
 
-    async function loadRegistrations() {
-      showLookupMessage("正在讀取最新報名名單…", "info");
-      const url = `${SCRIPT_URL}?action=registrations&t=${Date.now()}`;
-      const response = await fetch(url, { method: "GET", cache: "no-store" });
-      if (!response.ok) throw new Error("無法讀取報名名單");
+    const REGISTRATION_CACHE_KEY = "kplus_ceo_registrations_v2";
+    const REGISTRATION_CACHE_TIME_KEY = "kplus_ceo_registrations_time_v2";
+    const REQUEST_TIMEOUT_MS = 12000;
 
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.message || "報名名單載入失敗");
-
-      registrations = (result.registrations || [])
+    function applyRegistrationData(rawRegistrations) {
+      registrations = (rawRegistrations || [])
         .map(normalizeRegistration)
         .filter(record => record.region && record.office && record.name)
         .filter(isEligible);
 
-      const regionsInData = [...new Set(registrations.map(r => r.region))];
+      const regionsInData = [...new Set(registrations.map(record => record.region))];
       const orderedRegions = [
         ...REGION_ORDER.filter(region => regionsInData.includes(region)),
-        ...regionsInData.filter(region => !REGION_ORDER.includes(region)).sort((a, b) => a.localeCompare(b, "zh-Hant"))
+        ...regionsInData
+          .filter(region => !REGION_ORDER.includes(region))
+          .sort((a, b) => a.localeCompare(b, "zh-Hant"))
       ];
 
       regionSelect.innerHTML = '<option value="">請選擇所屬地區</option>' +
-        orderedRegions.map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("");
+        orderedRegions
+          .map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`)
+          .join("");
+
       regionSelect.disabled = false;
-      hideLookupMessage();
+      personSelect.innerHTML = '<option value="">請先選擇所屬地區</option>';
+      personSelect.disabled = true;
+      startBtn.disabled = true;
+    }
+
+    function saveRegistrationCache(rawRegistrations) {
+      try {
+        localStorage.setItem(REGISTRATION_CACHE_KEY, JSON.stringify(rawRegistrations));
+        localStorage.setItem(REGISTRATION_CACHE_TIME_KEY, String(Date.now()));
+      } catch (error) {
+        console.warn("無法儲存報名名單快取：", error);
+      }
+    }
+
+    function readRegistrationCache() {
+      try {
+        const cachedText = localStorage.getItem(REGISTRATION_CACHE_KEY);
+        const cachedTime = Number(localStorage.getItem(REGISTRATION_CACHE_TIME_KEY) || 0);
+        if (!cachedText) return null;
+
+        const cachedRegistrations = JSON.parse(cachedText);
+        if (!Array.isArray(cachedRegistrations) || cachedRegistrations.length === 0) return null;
+
+        return {
+          registrations: cachedRegistrations,
+          cachedTime
+        };
+      } catch (error) {
+        console.warn("無法讀取報名名單快取：", error);
+        return null;
+      }
+    }
+
+    async function fetchLatestRegistrations() {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+      try {
+        const url = `${SCRIPT_URL}?action=registrations&t=${Date.now()}`;
+        const response = await fetch(url, {
+          method: "GET",
+          cache: "no-store",
+          signal: controller.signal
+        });
+
+        if (!response.ok) throw new Error("無法讀取報名名單");
+
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.message || "報名名單載入失敗");
+
+        const latestRegistrations = result.registrations || [];
+        if (!Array.isArray(latestRegistrations) || latestRegistrations.length === 0) {
+          throw new Error("報名名單目前沒有資料");
+        }
+
+        return latestRegistrations;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    async function refreshRegistrationsInBackground() {
+      try {
+        const latestRegistrations = await fetchLatestRegistrations();
+        saveRegistrationCache(latestRegistrations);
+
+        // 使用者尚未開始選擇時，立即套用最新名單；
+        // 若已經開始操作，則不打斷畫面，最新資料會留待下次使用。
+        if (!regionSelect.value) {
+          applyRegistrationData(latestRegistrations);
+        }
+      } catch (error) {
+        console.warn("背景更新報名名單失敗：", error);
+      }
+    }
+
+    async function loadRegistrations() {
+      const cached = readRegistrationCache();
+
+      if (cached) {
+        applyRegistrationData(cached.registrations);
+        hideLookupMessage();
+
+        // 先讓畫面立即可操作，再於背景同步 Google Sheet 最新名單。
+        void refreshRegistrationsInBackground();
+        return;
+      }
+
+      showLookupMessage("正在載入報名名單…", "info");
+
+      try {
+        const latestRegistrations = await fetchLatestRegistrations();
+        applyRegistrationData(latestRegistrations);
+        saveRegistrationCache(latestRegistrations);
+        hideLookupMessage();
+      } catch (error) {
+        if (error.name === "AbortError") {
+          throw new Error("名單讀取時間較久，請重新整理後再試。");
+        }
+        throw error;
+      }
     }
 
     function resetResult() {
@@ -791,7 +892,7 @@
         console.error(error);
         regionSelect.innerHTML = '<option value="">名單載入失敗</option>';
         regionSelect.disabled = true;
-        showLookupMessage("目前無法載入報名名單。請確認 Apps Script 已重新部署為網頁應用程式，且存取權限為「知道連結的任何人」。", "error");
+        showLookupMessage("目前無法載入報名名單，請稍後重新整理。若持續無法載入，請確認 Apps Script 已部署為網頁應用程式，且存取權限為「知道連結的任何人」。", "error");
       }
     });
   </script>
