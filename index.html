@@ -330,6 +330,24 @@
       line-height: 1.75;
     }
 
+    .notice-box {
+      padding: 18px;
+      border: 1px solid #b9d9ef;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f4faff 0%, #ffffff 100%);
+    }
+
+    .notice-box .section-title {
+      margin-bottom: 8px;
+    }
+
+    .notice-box p {
+      margin: 0;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
     .footer {
       margin-top: 20px;
       color: var(--muted);
@@ -375,7 +393,6 @@
     <section class="card hidden" id="successSection" aria-live="polite">
       <div class="success-box">
         <h2 id="successTitle">恭喜您報名成功！</h2>
-        <p id="successName"></p>
         <div id="registeredSessions" class="registered-list"></div>
       </div>
     </section>
@@ -386,18 +403,25 @@
 
       <form id="surveyForm">
         <div class="field">
-          <label for="expectation"><span class="question-number">1</span>請寫下您最期待聽到的內容是什麼？ <span class="required">＊</span></label>
-          <textarea id="expectation" required placeholder="可參考下方講師議題大綱，寫下您最希望講者深入分享的內容。"></textarea>
+          <label for="expectation"><span class="question-number">1</span>請寫下您最期待聽到的內容是什麼？（可參考下方議題大綱） <span class="required">＊</span></label>
+          <textarea id="expectation" required placeholder="請寫下您最希望講者深入分享的內容。"></textarea>
         </div>
 
         <div class="field">
-          <label for="qaQuestion"><span class="question-number">2</span>請寫下您想要詢問講者的提問是？ <span class="required">＊</span></label>
+          <label for="qaQuestion"><span class="question-number">2</span>請寫下您想要詢問講者的問題是什麼？ <span class="required">＊</span></label>
           <textarea id="qaQuestion" required placeholder="可結合通訊處經營、團隊帶領、人才培育或實際管理情境提出問題。"></textarea>
         </div>
 
         <button class="primary-btn" id="submitBtn" type="submit">送出問卷</button>
         <div id="submitStatus" class="submit-status" role="status" aria-live="polite"></div>
       </form>
+    </section>
+
+    <section class="card hidden" id="novemberOnlyNotice" aria-live="polite">
+      <div class="notice-box">
+        <h2 class="section-title">課前問卷說明</h2>
+        <p>本次問卷僅先行蒐集八月份場次的課前期待與提問；十一月份場次將於課程前另行調查，感謝您的配合。</p>
+      </div>
     </section>
 
     <section class="card hidden" id="courseSection">
@@ -487,9 +511,9 @@
     const lookupMessage = document.getElementById("lookupMessage");
     const successSection = document.getElementById("successSection");
     const successTitle = document.getElementById("successTitle");
-    const successName = document.getElementById("successName");
     const registeredSessions = document.getElementById("registeredSessions");
     const surveySection = document.getElementById("surveySection");
+    const novemberOnlyNotice = document.getElementById("novemberOnlyNotice");
     const courseSection = document.getElementById("courseSection");
     const courseGrid = document.getElementById("courseGrid");
     const surveyForm = document.getElementById("surveyForm");
@@ -544,6 +568,10 @@
       return [...new Set([...august, ...november].map(normalizeCourseKey).filter(Boolean))];
     }
 
+    function hasAugustCourse(record) {
+      return getRecordCourseKeys(record).some(key => key.startsWith("8/"));
+    }
+
     function isEligible(record) {
       const response = String(record.response ?? record["出席回覆"] ?? "").trim();
       return !response.includes("不克出席") && getRecordCourseKeys(record).length > 0;
@@ -591,6 +619,7 @@
       selectedRecord = null;
       successSection.classList.add("hidden");
       surveySection.classList.add("hidden");
+      novemberOnlyNotice.classList.add("hidden");
       courseSection.classList.add("hidden");
       expectation.value = "";
       qaQuestion.value = "";
@@ -666,7 +695,6 @@
       }
 
       successTitle.textContent = "恭喜您報名成功！";
-      successName.textContent = `${selectedRecord.office}通訊處｜${selectedRecord.name} 處經理`;
       registeredSessions.innerHTML = courseKeys
         .map(key => {
           const info = COURSE_INFO[key];
@@ -676,7 +704,15 @@
 
       courseGrid.innerHTML = courseKeys.map(renderCourseCard).join("");
       successSection.classList.remove("hidden");
-      surveySection.classList.remove("hidden");
+
+      if (hasAugustCourse(selectedRecord)) {
+        surveySection.classList.remove("hidden");
+        novemberOnlyNotice.classList.add("hidden");
+      } else {
+        surveySection.classList.add("hidden");
+        novemberOnlyNotice.classList.remove("hidden");
+      }
+
       courseSection.classList.remove("hidden");
       successSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
