@@ -1,334 +1,5 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#073c6d" />
-  <title>K PLUS CEO講堂｜課前問卷</title>
-  <style>
-    :root {
-      --blue: #005bac;
-      --deep-blue: #073c6d;
-      --pale-blue: #eef6ff;
-      --gold: #c79a45;
-      --text: #17324d;
-      --muted: #667085;
-      --line: #d9e3ee;
-      --bg: #f4f7fb;
-      --white: #ffffff;
-      --success: #16795b;
-      --danger: #c43d3d;
-      --warning: #946200;
-      --shadow: 0 12px 30px rgba(7, 60, 109, 0.10);
-      --radius: 18px;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    button, select, textarea { font: inherit; }
-
-    .page {
-      width: min(720px, calc(100% - 20px));
-      margin: 0 auto;
-      padding: 10px 0 calc(40px + env(safe-area-inset-bottom));
-    }
-
-    .hero {
-      padding: 18px 16px;
-      border-radius: var(--radius);
-      color: var(--white);
-      background: linear-gradient(135deg, var(--deep-blue), var(--blue));
-      box-shadow: var(--shadow);
-    }
-
-    .hero-kicker {
-      margin-bottom: 5px;
-      color: #f5dfad;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .08em;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(23px, 6vw, 30px);
-      line-height: 1.25;
-      font-weight: 900;
-    }
-
-    .hero p {
-      margin: 7px 0 0;
-      color: rgba(255,255,255,.86);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .card {
-      margin-top: 12px;
-      padding: 17px 15px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--white);
-      box-shadow: var(--shadow);
-    }
-
-    .hidden { display: none !important; }
-
-    .field { margin-bottom: 16px; }
-    .field:last-child { margin-bottom: 0; }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--deep-blue);
-      font-size: 15px;
-      line-height: 1.5;
-      font-weight: 850;
-    }
-
-    .required { color: var(--danger); }
-
-    select, textarea {
-      width: 100%;
-      border: 1px solid #c9d5e2;
-      border-radius: 13px;
-      background-color: var(--white);
-      color: var(--text);
-      font-size: 16px;
-      outline: none;
-    }
-
-    select {
-      min-height: 52px;
-      padding: 12px 42px 12px 13px;
-      appearance: none;
-      background-image:
-        linear-gradient(45deg, transparent 50%, var(--deep-blue) 50%),
-        linear-gradient(135deg, var(--deep-blue) 50%, transparent 50%);
-      background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
-      background-size: 6px 6px;
-      background-repeat: no-repeat;
-    }
-
-    select:disabled {
-      background-color: #f1f4f7;
-      color: #8c99a8;
-    }
-
-    textarea {
-      min-height: 140px;
-      padding: 13px;
-      line-height: 1.7;
-      resize: vertical;
-    }
-
-    select:focus, textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(0,91,172,.10);
-    }
-
-    .primary-btn {
-      width: 100%;
-      min-height: 52px;
-      padding: 11px 16px;
-      border: 0;
-      border-radius: 13px;
-      color: var(--white);
-      background: linear-gradient(135deg, var(--blue), var(--deep-blue));
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 9px 20px rgba(0,91,172,.18);
-    }
-
-    .primary-btn:disabled { opacity: .55; cursor: not-allowed; }
-
-    .message {
-      display: none;
-      margin-top: 12px;
-      padding: 11px 12px;
-      border-radius: 11px;
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .message.show { display: block; }
-    .message.info { border: 1px solid #bfd8ee; background: #f1f8ff; color: var(--deep-blue); }
-    .message.warning { border: 1px solid #efd08a; background: #fff8e8; color: var(--warning); }
-    .message.error { border: 1px solid #edb8b8; background: #fff2f2; color: var(--danger); }
-    .message.success { border: 1px solid #adddca; background: #effbf6; color: var(--success); }
-
-    .success-box {
-      padding: 17px 15px;
-      border: 1px solid #b5dfcf;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #effbf6, #ffffff);
-    }
-
-    .success-box h2 {
-      margin: 0;
-      color: var(--success);
-      font-size: 22px;
-      line-height: 1.4;
-      font-weight: 900;
-    }
-
-    .success-box p {
-      margin: 7px 0 0;
-      font-size: 15px;
-      line-height: 1.65;
-    }
-
-    .registered-list {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: var(--white);
-      color: var(--deep-blue);
-      font-size: 15px;
-      line-height: 1.8;
-      font-weight: 850;
-    }
-
-    .section-title {
-      margin: 0 0 5px;
-      color: var(--deep-blue);
-      font-size: 21px;
-      line-height: 1.4;
-      font-weight: 900;
-    }
-
-    .section-desc {
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .question-number {
-      display: inline-grid;
-      place-items: center;
-      width: 25px;
-      height: 25px;
-      margin-right: 5px;
-      border-radius: 50%;
-      color: var(--white);
-      background: var(--blue);
-      font-size: 13px;
-      vertical-align: 1px;
-    }
-
-    .hint {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .submit-status {
-      min-height: 22px;
-      margin-top: 10px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .submit-status.success { color: var(--success); font-weight: 800; }
-    .submit-status.error { color: var(--danger); font-weight: 800; }
-
-    .session-card {
-      overflow: hidden;
-      margin-top: 13px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--white);
-    }
-    .session-card:first-child { margin-top: 0; }
-
-    .session-head {
-      padding: 15px;
-      color: var(--white);
-      background: linear-gradient(135deg, var(--deep-blue), var(--blue));
-    }
-
-    .session-date {
-      margin-bottom: 4px;
-      color: #f5dfad;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .session-head h3 {
-      margin: 0;
-      font-size: 20px;
-      line-height: 1.4;
-      font-weight: 900;
-    }
-
-    .speaker-role {
-      margin-top: 3px;
-      color: rgba(255,255,255,.84);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .session-body { padding: 16px 15px; }
-
-    .meta-row {
-      display: grid;
-      grid-template-columns: 50px 1fr;
-      gap: 8px;
-      margin-bottom: 7px;
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .meta-label { color: var(--muted); font-weight: 700; }
-    .meta-value { color: var(--text); font-weight: 750; }
-
-    .topic-label {
-      margin-top: 14px;
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: .06em;
-    }
-
-    .topic-title {
-      margin-top: 4px;
-      color: var(--deep-blue);
-      font-size: 19px;
-      line-height: 1.45;
-      font-weight: 900;
-    }
-
-    .speaker-summary {
-      margin-top: 10px;
-      font-size: 14px;
-      line-height: 1.75;
-    }
-
-    .outline-heading {
-      margin-top: 14px;
-      color: var(--deep-blue);
-      font-size: 15px;
-      font-weight: 900;
-    }
-
-    .outline-list {
-      margin: 7px 0 0;
-      padding-left: 20px;
-      font-size: 14px;
-      line-height: 1.75;
-    }
+line-height: 1.75;
+}
 
     .notice-box {
       padding: 18px;
@@ -348,74 +19,36 @@
       line-height: 1.8;
     }
 
-    .footer {
-      margin-top: 20px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-      text-align: center;
-    }
+.footer {
+margin-top: 20px;
+color: var(--muted);
+@@ -375,7 +393,6 @@ <h1>課前問卷</h1>
+<section class="card hidden" id="successSection" aria-live="polite">
+<div class="success-box">
+<h2 id="successTitle">恭喜您報名成功！</h2>
+        <p id="successName"></p>
+<div id="registeredSessions" class="registered-list"></div>
+</div>
+</section>
+@@ -386,12 +403,12 @@ <h2 class="section-title">針對八月份課程主題的期待</h2>
 
-    @media (min-width: 640px) {
-      .page { padding-top: 18px; }
-      .hero { padding: 21px 20px; }
-      .card { padding: 21px 20px; }
-    }
-  </style>
-</head>
-<body>
-  <main class="page">
-    <header class="hero">
-      <div class="hero-kicker">K PLUS CEO講堂</div>
-      <h1>課前問卷</h1>
-      <p>請選擇所屬地區及「通訊處｜處經理姓名」，完成八月份課程課前問卷。</p>
-    </header>
-
-    <section class="card" id="lookupSection">
-      <div class="field">
-        <label for="regionSelect">所屬地區 <span class="required">＊</span></label>
-        <select id="regionSelect" disabled>
-          <option value="">正在載入報名名單…</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="personSelect">通訊處｜處經理姓名 <span class="required">＊</span></label>
-        <select id="personSelect" disabled>
-          <option value="">請先選擇所屬地區</option>
-        </select>
-      </div>
-
-      <button class="primary-btn" id="startBtn" type="button" disabled>開始填寫問卷</button>
-      <div id="lookupMessage" class="message" role="status" aria-live="polite"></div>
-    </section>
-
-    <section class="card hidden" id="successSection" aria-live="polite">
-      <div class="success-box">
-        <h2 id="successTitle">恭喜您報名成功！</h2>
-        <div id="registeredSessions" class="registered-list"></div>
-      </div>
-    </section>
-
-    <section class="card hidden" id="surveySection">
-      <h2 class="section-title">針對八月份課程主題的期待</h2>
-      <p class="section-desc">可先參考本頁下方的講師議題大綱，再填寫您的期待與提問。</p>
-
-      <form id="surveyForm">
-        <div class="field">
+<form id="surveyForm">
+<div class="field">
+          <label for="expectation"><span class="question-number">1</span>請寫下您最期待聽到的內容是什麼？ <span class="required">＊</span></label>
+          <textarea id="expectation" required placeholder="可參考下方講師議題大綱，寫下您最希望講者深入分享的內容。"></textarea>
           <label for="expectation"><span class="question-number">1</span>請寫下您最期待聽到的內容是什麼？（可參考下方議題大綱） <span class="required">＊</span></label>
           <textarea id="expectation" required placeholder="請寫下您最希望講者深入分享的內容。"></textarea>
-        </div>
+</div>
 
-        <div class="field">
+<div class="field">
+          <label for="qaQuestion"><span class="question-number">2</span>請寫下您想要詢問講者的提問是？ <span class="required">＊</span></label>
           <label for="qaQuestion"><span class="question-number">2</span>請寫下您想要詢問講者的問題是什麼？ <span class="required">＊</span></label>
-          <textarea id="qaQuestion" required placeholder="可結合通訊處經營、團隊帶領、人才培育或實際管理情境提出問題。"></textarea>
-        </div>
+<textarea id="qaQuestion" required placeholder="可結合通訊處經營、團隊帶領、人才培育或實際管理情境提出問題。"></textarea>
+</div>
 
-        <button class="primary-btn" id="submitBtn" type="submit">送出問卷</button>
-        <div id="submitStatus" class="submit-status" role="status" aria-live="polite"></div>
-      </form>
-    </section>
+@@ -400,6 +417,13 @@ <h2 class="section-title">針對八月份課程主題的期待</h2>
+</form>
+</section>
 
     <section class="card hidden" id="novemberOnlyNotice" aria-live="polite">
       <div class="notice-box">
@@ -424,387 +57,52 @@
       </div>
     </section>
 
-    <section class="card hidden" id="courseSection">
-      <h2 class="section-title">您的報名場次與講師資訊</h2>
-      <p class="section-desc">以下議題大綱可供填寫第一題時參考。</p>
-      <div id="courseGrid"></div>
-    </section>
-
-    <div class="footer">凱基人壽 × 商周CEO學院｜K PLUS CEO講堂</div>
-  </main>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxRFi9RMJaZyr1CenG3orwf9iyyKbZtOB4GL-sQL6TG03c-NCpz62KuaFc78qHVT363A/exec";
-
-    const REGION_ORDER = ["北一", "北二", "桃竹", "中嘉", "台南", "高屏"];
-
-    const COURSE_INFO = {
-      "8/5台北場": {
-        aliases: ["8/5台北場", "8/5 台北場", "08/05台北場", "8月5日台北場"],
-        date: "8/5（三）下午",
-        city: "台北場",
-        speaker: "邱光隆",
-        role: "三商家購（美廉社）董事總經理",
-        location: "台北金控大樓18樓",
-        topic: "逆境領導力",
-        summary: "從第1家美廉社起步，打造全台800多家門市版圖，由單點成功延伸至可複製的系統化經營，並以主管養成與人才培育推動組織擴張。",
-        outline: [
-          "從市場挑戰到經營突破：美廉社如何建立定位並帶動成長",
-          "從單點成功到據點複製：如何打造可複製的經營模式與管理節奏",
-          "從帶人到培育組織：人才培育、幹部養成與團隊擴張的關鍵思維",
-          "給創業者經營提醒：當團隊面臨瓶頸時，領導者如何重新帶動成長"
-        ]
-      },
-      "8/11高雄場": {
-        aliases: ["8/11高雄場", "8/11 高雄場", "08/11高雄場", "8月11日高雄場"],
-        date: "8/11（二）下午",
-        city: "高雄場",
-        speaker: "謝馨慧",
-        role: "前台灣奧美集團董事總經理｜曜誠溝通顧問董事長",
-        location: "高雄明誠大樓12樓",
-        topic: "溝通影響力",
-        summary: "現任曜誠溝通顧問董事長、創辦CI溝通智能中心，從奧美多年品牌、公關與危機管理實戰出發，帶領主管掌握人心、局勢與不同世代的溝通關鍵。",
-        outline: [
-          "洞察人心與看懂局勢：掌握新世代心理與團隊溝通關鍵",
-          "自我定調與領導場域建立：形塑讓部屬願意追隨的經營者形象",
-          "精準影響與信任賦能：提升團隊信任、主管影響力與組織規模化動能",
-          "經營者私房筆記：將人心洞察轉化為日常經營習慣"
-        ]
-      },
-      "11/10台北場": {
-        aliases: ["11/10台北場", "11/10 台北場", "11月10日台北場"],
-        date: "11/10（二）下午",
-        city: "台北場",
-        speaker: "陳慧蓉",
-        role: "前台灣微軟首席營運長｜映光領導力教練工作室創辦人",
-        location: "台北金控大樓18樓",
-        topic: "教練引導力",
-        summary: "從跨國企業管理經驗出發，以教練式引導建立信任、激發潛能，並運用成長心態與協作文化推動團隊持續進化。",
-        outline: [
-          "從管理績效到成就他人：主管如何將目標轉化為團隊前進動能",
-          "教練式領導與信任建立：在壓力中建立團隊信任、賦能與成長",
-          "成長心態與協作文化：從微軟經驗看高成長團隊如何持續進化",
-          "AI時代的領導提醒：主管如何保有學習力與組織彈性"
-        ]
-      },
-      "11/11高雄場": {
-        aliases: ["11/11高雄場", "11/11 高雄場", "11月11日高雄場"],
-        date: "11/11（三）下午",
-        city: "高雄場",
-        speaker: "陳慧蓉",
-        role: "前台灣微軟首席營運長｜映光領導力教練工作室創辦人",
-        location: "高雄明誠大樓12樓",
-        topic: "教練引導力",
-        summary: "從跨國企業管理經驗出發，以教練式引導建立信任、激發潛能，並運用成長心態與協作文化推動團隊持續進化。",
-        outline: [
-          "從管理績效到成就他人：主管如何將目標轉化為團隊前進動能",
-          "教練式領導與信任建立：在壓力中建立團隊信任、賦能與成長",
-          "成長心態與協作文化：從微軟經驗看高成長團隊如何持續進化",
-          "AI時代的領導提醒：主管如何保有學習力與組織彈性"
-        ]
-      }
-    };
-
-    const regionSelect = document.getElementById("regionSelect");
-    const personSelect = document.getElementById("personSelect");
-    const startBtn = document.getElementById("startBtn");
-    const lookupMessage = document.getElementById("lookupMessage");
-    const successSection = document.getElementById("successSection");
-    const successTitle = document.getElementById("successTitle");
-    const registeredSessions = document.getElementById("registeredSessions");
-    const surveySection = document.getElementById("surveySection");
+<section class="card hidden" id="courseSection">
+<h2 class="section-title">您的報名場次與講師資訊</h2>
+<p class="section-desc">以下議題大綱可供填寫第一題時參考。</p>
+@@ -487,9 +511,9 @@ <h2 class="section-title">您的報名場次與講師資訊</h2>
+const lookupMessage = document.getElementById("lookupMessage");
+const successSection = document.getElementById("successSection");
+const successTitle = document.getElementById("successTitle");
+    const successName = document.getElementById("successName");
+const registeredSessions = document.getElementById("registeredSessions");
+const surveySection = document.getElementById("surveySection");
     const novemberOnlyNotice = document.getElementById("novemberOnlyNotice");
-    const courseSection = document.getElementById("courseSection");
-    const courseGrid = document.getElementById("courseGrid");
-    const surveyForm = document.getElementById("surveyForm");
-    const expectation = document.getElementById("expectation");
-    const qaQuestion = document.getElementById("qaQuestion");
-    const submitBtn = document.getElementById("submitBtn");
-    const submitStatus = document.getElementById("submitStatus");
-
-    let registrations = [];
-    let selectedRecord = null;
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function showLookupMessage(text, type = "info") {
-      lookupMessage.textContent = text;
-      lookupMessage.className = `message show ${type}`;
-    }
-
-    function hideLookupMessage() {
-      lookupMessage.textContent = "";
-      lookupMessage.className = "message";
-    }
-
-    function asSessionArray(value) {
-      if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
-      if (!value) return [];
-      return String(value).split(/[；;、\n\r]+/).map(v => v.trim()).filter(Boolean);
-    }
-
-    function normalizeCourseKey(rawValue) {
-      const value = String(rawValue || "").replace(/\s+/g, "");
-      for (const [key, info] of Object.entries(COURSE_INFO)) {
-        if (info.aliases.some(alias => value.includes(alias.replace(/\s+/g, "")))) return key;
-      }
-      if (/8\/?0?5/.test(value) && value.includes("台北")) return "8/5台北場";
-      if (/8\/?11/.test(value) && value.includes("高雄")) return "8/11高雄場";
-      if (/11\/?10/.test(value) && value.includes("台北")) return "11/10台北場";
-      if (/11\/?11/.test(value) && value.includes("高雄")) return "11/11高雄場";
-      return "";
-    }
-
-    function getRecordCourseKeys(record) {
-      const august = asSessionArray(record.augustSessions ?? record.august ?? record["八月場次"]);
-      const november = asSessionArray(record.novemberSessions ?? record.november ?? record["十一月場次"]);
-      return [...new Set([...august, ...november].map(normalizeCourseKey).filter(Boolean))];
-    }
+const courseSection = document.getElementById("courseSection");
+const courseGrid = document.getElementById("courseGrid");
+const surveyForm = document.getElementById("surveyForm");
+@@ -544,6 +568,10 @@ <h2 class="section-title">您的報名場次與講師資訊</h2>
+return [...new Set([...august, ...november].map(normalizeCourseKey).filter(Boolean))];
+}
 
     function hasAugustCourse(record) {
       return getRecordCourseKeys(record).some(key => key.startsWith("8/"));
     }
 
-    function isEligible(record) {
-      const response = String(record.response ?? record["出席回覆"] ?? "").trim();
-      return !response.includes("不克出席") && getRecordCourseKeys(record).length > 0;
-    }
-
-    function normalizeRegistration(record, index) {
-      return {
-        id: String(record.id ?? index),
-        region: String(record.region ?? record["所屬地區"] ?? "").trim(),
-        office: String(record.office ?? record["通訊處名稱"] ?? "").trim(),
-        name: String(record.name ?? record.managerName ?? record["姓名"] ?? "").trim(),
-        response: String(record.response ?? record["出席回覆"] ?? "").trim(),
-        augustSessions: asSessionArray(record.augustSessions ?? record.august ?? record["八月場次"]),
-        novemberSessions: asSessionArray(record.novemberSessions ?? record.november ?? record["十一月場次"])
-      };
-    }
-
-    const REGISTRATION_CACHE_KEY = "kplus_ceo_registrations_v2";
-    const REGISTRATION_CACHE_TIME_KEY = "kplus_ceo_registrations_time_v2";
-    const REQUEST_TIMEOUT_MS = 12000;
-
-    function applyRegistrationData(rawRegistrations) {
-      registrations = (rawRegistrations || [])
-        .map(normalizeRegistration)
-        .filter(record => record.region && record.office && record.name)
-        .filter(isEligible);
-
-      const regionsInData = [...new Set(registrations.map(record => record.region))];
-      const orderedRegions = [
-        ...REGION_ORDER.filter(region => regionsInData.includes(region)),
-        ...regionsInData
-          .filter(region => !REGION_ORDER.includes(region))
-          .sort((a, b) => a.localeCompare(b, "zh-Hant"))
-      ];
-
-      regionSelect.innerHTML = '<option value="">請選擇所屬地區</option>' +
-        orderedRegions
-          .map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`)
-          .join("");
-
-      regionSelect.disabled = false;
-      personSelect.innerHTML = '<option value="">請先選擇所屬地區</option>';
-      personSelect.disabled = true;
-      startBtn.disabled = true;
-    }
-
-    function saveRegistrationCache(rawRegistrations) {
-      try {
-        localStorage.setItem(REGISTRATION_CACHE_KEY, JSON.stringify(rawRegistrations));
-        localStorage.setItem(REGISTRATION_CACHE_TIME_KEY, String(Date.now()));
-      } catch (error) {
-        console.warn("無法儲存報名名單快取：", error);
-      }
-    }
-
-    function readRegistrationCache() {
-      try {
-        const cachedText = localStorage.getItem(REGISTRATION_CACHE_KEY);
-        const cachedTime = Number(localStorage.getItem(REGISTRATION_CACHE_TIME_KEY) || 0);
-        if (!cachedText) return null;
-
-        const cachedRegistrations = JSON.parse(cachedText);
-        if (!Array.isArray(cachedRegistrations) || cachedRegistrations.length === 0) return null;
-
-        return {
-          registrations: cachedRegistrations,
-          cachedTime
-        };
-      } catch (error) {
-        console.warn("無法讀取報名名單快取：", error);
-        return null;
-      }
-    }
-
-    async function fetchLatestRegistrations() {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
-      try {
-        const url = `${SCRIPT_URL}?action=registrations&t=${Date.now()}`;
-        const response = await fetch(url, {
-          method: "GET",
-          cache: "no-store",
-          signal: controller.signal
-        });
-
-        if (!response.ok) throw new Error("無法讀取報名名單");
-
-        const result = await response.json();
-        if (!result.ok) throw new Error(result.message || "報名名單載入失敗");
-
-        const latestRegistrations = result.registrations || [];
-        if (!Array.isArray(latestRegistrations) || latestRegistrations.length === 0) {
-          throw new Error("報名名單目前沒有資料");
-        }
-
-        return latestRegistrations;
-      } finally {
-        clearTimeout(timeoutId);
-      }
-    }
-
-    async function refreshRegistrationsInBackground() {
-      try {
-        const latestRegistrations = await fetchLatestRegistrations();
-        saveRegistrationCache(latestRegistrations);
-
-        // 使用者尚未開始選擇時，立即套用最新名單；
-        // 若已經開始操作，則不打斷畫面，最新資料會留待下次使用。
-        if (!regionSelect.value) {
-          applyRegistrationData(latestRegistrations);
-        }
-      } catch (error) {
-        console.warn("背景更新報名名單失敗：", error);
-      }
-    }
-
-    async function loadRegistrations() {
-      const cached = readRegistrationCache();
-
-      if (cached) {
-        applyRegistrationData(cached.registrations);
-        hideLookupMessage();
-
-        // 先讓畫面立即可操作，再於背景同步 Google Sheet 最新名單。
-        void refreshRegistrationsInBackground();
-        return;
-      }
-
-      showLookupMessage("正在載入報名名單…", "info");
-
-      try {
-        const latestRegistrations = await fetchLatestRegistrations();
-        applyRegistrationData(latestRegistrations);
-        saveRegistrationCache(latestRegistrations);
-        hideLookupMessage();
-      } catch (error) {
-        if (error.name === "AbortError") {
-          throw new Error("名單讀取時間較久，請重新整理後再試。");
-        }
-        throw error;
-      }
-    }
-
-    function resetResult() {
-      selectedRecord = null;
-      successSection.classList.add("hidden");
-      surveySection.classList.add("hidden");
+function isEligible(record) {
+const response = String(record.response ?? record["出席回覆"] ?? "").trim();
+return !response.includes("不克出席") && getRecordCourseKeys(record).length > 0;
+@@ -591,6 +619,7 @@ <h2 class="section-title">您的報名場次與講師資訊</h2>
+selectedRecord = null;
+successSection.classList.add("hidden");
+surveySection.classList.add("hidden");
       novemberOnlyNotice.classList.add("hidden");
-      courseSection.classList.add("hidden");
-      expectation.value = "";
-      qaQuestion.value = "";
-      submitStatus.textContent = "";
-      submitStatus.className = "submit-status";
-    }
+courseSection.classList.add("hidden");
+expectation.value = "";
+qaQuestion.value = "";
+@@ -666,7 +695,6 @@ <h3>${escapeHtml(info.speaker)}｜${escapeHtml(info.topic)}</h3>
+}
 
-    function updatePersonOptions() {
-      resetResult();
-      hideLookupMessage();
-      const region = regionSelect.value;
-      if (!region) {
-        personSelect.innerHTML = '<option value="">請先選擇所屬地區</option>';
-        personSelect.disabled = true;
-        startBtn.disabled = true;
-        return;
-      }
+successTitle.textContent = "恭喜您報名成功！";
+      successName.textContent = `${selectedRecord.office}通訊處｜${selectedRecord.name} 處經理`;
+registeredSessions.innerHTML = courseKeys
+.map(key => {
+const info = COURSE_INFO[key];
+@@ -676,7 +704,15 @@ <h3>${escapeHtml(info.speaker)}｜${escapeHtml(info.topic)}</h3>
 
-      const matches = registrations
-        .filter(record => record.region === region)
-        .sort((a, b) => `${a.office}${a.name}`.localeCompare(`${b.office}${b.name}`, "zh-Hant"));
-
-      personSelect.innerHTML = '<option value="">請選擇通訊處｜處經理姓名</option>' +
-        matches.map((record, index) => `<option value="${index}">${escapeHtml(record.office)}｜${escapeHtml(record.name)}</option>`).join("");
-      personSelect.dataset.region = region;
-      personSelect.disabled = matches.length === 0;
-      startBtn.disabled = true;
-
-      if (!matches.length) showLookupMessage("此地區目前沒有可填寫的報名資料。", "warning");
-    }
-
-    function getCurrentRegionMatches() {
-      return registrations
-        .filter(record => record.region === regionSelect.value)
-        .sort((a, b) => `${a.office}${a.name}`.localeCompare(`${b.office}${b.name}`, "zh-Hant"));
-    }
-
-    function renderCourseCard(courseKey) {
-      const info = COURSE_INFO[courseKey];
-      if (!info) return "";
-      return `
-        <article class="session-card">
-          <div class="session-head">
-            <div class="session-date">${escapeHtml(info.date)}｜${escapeHtml(info.city)}</div>
-            <h3>${escapeHtml(info.speaker)}｜${escapeHtml(info.topic)}</h3>
-            <div class="speaker-role">${escapeHtml(info.role)}</div>
-          </div>
-          <div class="session-body">
-            <div class="meta-row"><div class="meta-label">地點</div><div class="meta-value">${escapeHtml(info.location)}</div></div>
-            <div class="topic-label">課程主題</div>
-            <div class="topic-title">${escapeHtml(info.topic)}</div>
-            <div class="speaker-summary">${escapeHtml(info.summary)}</div>
-            <div class="outline-heading">議題大綱</div>
-            <ul class="outline-list">${info.outline.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-          </div>
-        </article>`;
-    }
-
-    function showSelectedRecord() {
-      hideLookupMessage();
-      const index = Number(personSelect.value);
-      const matches = getCurrentRegionMatches();
-      if (!Number.isInteger(index) || !matches[index]) {
-        showLookupMessage("請先選擇您的通訊處與姓名。", "warning");
-        return;
-      }
-
-      selectedRecord = matches[index];
-      const courseKeys = getRecordCourseKeys(selectedRecord);
-      if (!courseKeys.length) {
-        showLookupMessage("目前查不到您的有效報名場次，請洽主辦單位確認。", "warning");
-        return;
-      }
-
-      successTitle.textContent = "恭喜您報名成功！";
-      registeredSessions.innerHTML = courseKeys
-        .map(key => {
-          const info = COURSE_INFO[key];
-          return `✓ ${escapeHtml(info.date)}｜${escapeHtml(info.city)}｜${escapeHtml(info.speaker)}｜${escapeHtml(info.topic)}`;
-        })
-        .join("<br>");
-
-      courseGrid.innerHTML = courseKeys.map(renderCourseCard).join("");
-      successSection.classList.remove("hidden");
+courseGrid.innerHTML = courseKeys.map(renderCourseCard).join("");
+successSection.classList.remove("hidden");
+      surveySection.classList.remove("hidden");
 
       if (hasAugustCourse(selectedRecord)) {
         surveySection.classList.remove("hidden");
@@ -814,87 +112,6 @@
         novemberOnlyNotice.classList.remove("hidden");
       }
 
-      courseSection.classList.remove("hidden");
-      successSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    async function submitSurvey(event) {
-      event.preventDefault();
-      if (!selectedRecord) {
-        submitStatus.textContent = "請先選擇報名資料。";
-        submitStatus.className = "submit-status error";
-        return;
-      }
-
-      const expectationText = expectation.value.trim();
-      const qaText = qaQuestion.value.trim();
-      if (!expectationText || !qaText) {
-        submitStatus.textContent = "請完成兩題後再送出。";
-        submitStatus.className = "submit-status error";
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "送出中…";
-      submitStatus.textContent = "正在送出問卷，請稍候。";
-      submitStatus.className = "submit-status";
-
-      const body = new URLSearchParams({
-        region: selectedRecord.region,
-        office: selectedRecord.office,
-        managerName: selectedRecord.name,
-        response: selectedRecord.response,
-        augustSessions: selectedRecord.augustSessions.join("；"),
-        novemberSessions: selectedRecord.novemberSessions.join("；"),
-        expectation: expectationText,
-        qaQuestion: qaText,
-        source: "K PLUS CEO講堂課前問卷"
-      });
-
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-          body: body.toString()
-        });
-
-        const text = await response.text();
-        let result = null;
-        try { result = JSON.parse(text); } catch (_) {}
-        if (!response.ok || (result && result.ok === false)) {
-          throw new Error(result?.message || "送出失敗");
-        }
-
-        submitStatus.textContent = "問卷已成功送出，謝謝您的回覆！";
-        submitStatus.className = "submit-status success";
-        submitBtn.textContent = "已完成送出";
-      } catch (error) {
-        console.error(error);
-        submitStatus.textContent = "目前無法送出，請確認網路後再試一次。";
-        submitStatus.className = "submit-status error";
-        submitBtn.disabled = false;
-        submitBtn.textContent = "重新送出問卷";
-      }
-    }
-
-    regionSelect.addEventListener("change", updatePersonOptions);
-    personSelect.addEventListener("change", () => {
-      resetResult();
-      startBtn.disabled = !personSelect.value;
-    });
-    startBtn.addEventListener("click", showSelectedRecord);
-    surveyForm.addEventListener("submit", submitSurvey);
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        await loadRegistrations();
-      } catch (error) {
-        console.error(error);
-        regionSelect.innerHTML = '<option value="">名單載入失敗</option>';
-        regionSelect.disabled = true;
-        showLookupMessage("目前無法載入報名名單，請稍後重新整理。若持續無法載入，請確認 Apps Script 已部署為網頁應用程式，且存取權限為「知道連結的任何人」。", "error");
-      }
-    });
-  </script>
-</body>
-</html>
+courseSection.classList.remove("hidden");
+successSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
